@@ -27,9 +27,10 @@ function bucketStartLabel(time: string | undefined, index: number, count: number
 
 interface ThroughputChartProps {
   traffic: TrafficWindow;
+  compact?: boolean;
 }
 
-export function ThroughputChart({ traffic }: ThroughputChartProps) {
+export function ThroughputChart({ traffic, compact = false }: ThroughputChartProps) {
   const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -74,7 +75,7 @@ export function ThroughputChart({ traffic }: ThroughputChartProps) {
   }
 
   return (
-    <figure className={styles.chart}>
+    <figure className={`${styles.chart} ${compact ? styles.compact : ''}`}>
       {/* 两条序列 → 图例常驻，并直接带上数值（浅色主题下绿色对比度偏低，数值即为补偿） */}
       <figcaption className={styles.legend}>
         <span className={styles.legendItem}>

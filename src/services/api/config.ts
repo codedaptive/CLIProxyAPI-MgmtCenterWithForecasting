@@ -4,6 +4,7 @@
 
 import { apiClient } from './client';
 import type { Config } from '@/types';
+import { isRecord } from '@/utils/helpers';
 import { normalizeConfigResponse } from './transformers';
 
 export const configApi = {
@@ -12,6 +13,11 @@ export const configApi = {
    */
   async getConfig(): Promise<Config> {
     const raw = await apiClient.get('/config');
+    if (!isRecord(raw)) {
+      throw new Error(
+        'The server did not return an API configuration. Check the connection address.'
+      );
+    }
     return normalizeConfigResponse(raw);
   },
 

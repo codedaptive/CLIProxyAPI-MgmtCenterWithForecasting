@@ -376,3 +376,13 @@
     opacity: 1;
   }
 }
+
+// Compact overview chart; the existing Dashboard keeps its original dimensions.
+.compact {
+  --chart-height: 104px;
+  gap: 8px;
+
+  .plot {
+    padding-top: 16px;
+  }
+}

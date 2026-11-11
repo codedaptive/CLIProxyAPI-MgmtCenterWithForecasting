@@ -13,6 +13,7 @@ import { useAuthStore } from '@/stores';
 import { useHeaderRefresh } from '@/hooks/useHeaderRefresh';
 import { formatCompactNumber, formatDateValue, formatPercent } from '@/utils/format';
 import { useDashboardOverview } from './hooks/useDashboardOverview';
+import { HomeSetup } from './components/HomeSetup';
 import { LiveWire } from './components/LiveWire';
 import { Meter } from './components/Meter';
 import { Sparkline } from './components/Sparkline';
@@ -228,10 +229,17 @@ export function DashboardPage() {
         <span className={styles.gridWash} />
       </div>
 
+      <HomeSetup
+        connected={connected}
+        credentialCount={credentials?.active ?? null}
+        providerKeyCount={counts.providerKeys}
+        modelCount={counts.models}
+      />
+
       {/* ---------- Hero ---------- */}
       <section className={styles.hero} ref={heroRef}>
         <div className={styles.heroCopy}>
-          <h1 className={styles.heroTitle} data-reveal>
+          <h2 className={styles.heroTitle} data-reveal>
             {t(`dashboard.${verdict.key}`)}
             <span
               className={`${styles.heroPeriod} ${heroAlive ? styles.heroPeriodLive : ''}`}
@@ -239,7 +247,7 @@ export function DashboardPage() {
             >
               {t('dashboard.hero_period')}
             </span>
-          </h1>
+          </h2>
           <p className={styles.heroMeta} data-reveal>
             {heroMetaLine}
           </p>

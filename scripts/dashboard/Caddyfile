@@ -1,0 +1,29 @@
+{
+	admin off
+	auto_https disable_redirects
+	skip_install_trust
+	storage file_system {$MINILLM_CADDY_STORAGE}
+	pki {
+		ca local {
+			name "MiniLLM Home CA"
+			root_cn "MiniLLM Home Root CA"
+			intermediate_cn "MiniLLM Home Intermediate CA"
+		}
+	}
+}
+
+https://minillm.local:8444 {
+	tls internal
+	redir / /management.html 302
+	handle /management.html {
+		root * {$MINILLM_DASHBOARD_ROOT}
+		header Cache-Control "no-cache"
+		file_server
+	}
+	handle /minillm/spend {
+		reverse_proxy 127.0.0.1:8318
+	}
+	handle {
+		reverse_proxy 127.0.0.1:8317
+	}
+}

@@ -598,6 +598,18 @@ export function MainLayout() {
       labelKey: 'nav_groups.operate',
       items: [
         {
+          path: '/overview',
+          labelKey: 'nav.overview',
+          metaKey: 'nav_meta.overview',
+          icon: sidebarIcons.dashboard,
+        },
+        {
+          path: '/spend',
+          labelKey: 'nav.spend',
+          metaKey: 'nav_meta.spend',
+          icon: sidebarIcons.dashboard,
+        },
+        {
           path: '/',
           labelKey: 'nav.dashboard',
           metaKey: 'nav_meta.dashboard',
@@ -641,6 +653,12 @@ export function MainLayout() {
       labelKey: 'nav_groups.observe',
       items: [
         {
+          path: '/planning',
+          labelKey: 'planning.title',
+          metaKey: 'planning.nav_hint',
+          icon: sidebarIcons.dashboard,
+        },
+        {
           path: '/quota',
           labelKey: 'nav.quota_management',
           metaKey: 'nav_meta.quota_management',
@@ -658,6 +676,12 @@ export function MainLayout() {
       id: 'control',
       labelKey: 'nav_groups.control',
       items: [
+        {
+          path: '/plans',
+          labelKey: 'spend.plan_settings',
+          metaKey: 'planning.shared_plans_hint',
+          icon: sidebarIcons.config,
+        },
         {
           path: '/config',
           labelKey: 'nav.config_management',

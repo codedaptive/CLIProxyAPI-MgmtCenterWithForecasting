@@ -1,4 +1,8 @@
+import { PlansPage } from '@/features/planning/PlansPage';
+import { PlanningPage } from '@/features/planning/PlanningPage';
 import { Navigate, useRoutes, type Location } from 'react-router-dom';
+import { SpendPage } from '@/features/spend/SpendPage';
+import { OverviewPage } from '@/features/overview/OverviewPage';
 import { DashboardPage } from '@/features/dashboard/DashboardPage';
 import { ProvidersWorkbenchPage } from '@/features/providers/ProvidersWorkbenchPage';
 import { AuthFilesPage } from '@/features/authFiles/AuthFilesPage';
@@ -15,6 +19,10 @@ import { SystemPage } from '@/pages/SystemPage';
 import { useAuthStore } from '@/stores';
 
 const createMainRoutes = (supportsPlugin: boolean) => [
+  { path: '/overview', element: <OverviewPage /> },
+  { path: '/spend', element: <SpendPage /> },
+  { path: '/planning', element: <PlanningPage /> },
+  { path: '/plans', element: <PlansPage /> },
   { path: '/', element: <DashboardPage /> },
   { path: '/dashboard', element: <DashboardPage /> },
   { path: '/settings', element: <Navigate to="/config" replace /> },

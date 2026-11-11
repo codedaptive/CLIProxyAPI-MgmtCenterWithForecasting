@@ -10,7 +10,6 @@ lerna-debug.log*
 api.md
 usage.json
 CLAUDE.md
-AGENTS.md
 management-api*
 antigravity_usage.json
 codex_usage.json
@@ -34,3 +33,19 @@ settings.local.json
 *.njsproj
 *.sln
 *.sw?
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/
+
+# Private deployment journal and runtime state
+/HOME_SETUP.md
+/access.json
+/config.yaml
+/auth/
+/backups/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+.env
+.env.*
+!.env.example

@@ -1,0 +1,111 @@
+.planForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px;
+  margin: 12px 0 20px;
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  input,
+  select {
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    max-width: 190px;
+    font: inherit;
+  }
+  input[type='number'] {
+    width: 120px;
+  }
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--text-secondary);
+    outline-offset: 2px;
+  }
+}
+.forecast {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 14px;
+  > article {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  h3 {
+    margin: 0 0 12px;
+    font-size: 16px;
+  }
+  dl {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  dt {
+    color: var(--text-secondary);
+  }
+  dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.modelDemand {
+  font-size: 11px;
+  line-height: 1.4;
+  summary {
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  > div table,
+  td,
+  p {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  p {
+    margin: 6px 0;
+    overflow-wrap: anywhere;
+  }
+}
+.capacityPeriod {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color);
+  > h3 {
+    margin: 0 0 16px;
+    font-size: 17px;
+  }
+  h4 {
+    margin: 20px 0 12px;
+    font-size: 14px;
+  }
+}
+
+.planForm .planSelect {
+  flex: 1 1 320px;
+  select {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.fitPlot {
+  width: 360px;
+  max-width: 100%;
+  color: var(--text-secondary);
+  font-size: 10px;
+  text {
+    fill: currentColor;
+  }
+}

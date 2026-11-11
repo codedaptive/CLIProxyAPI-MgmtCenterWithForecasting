@@ -4,6 +4,7 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 import path from 'path';
 import { execSync } from 'child_process';
 import fs from 'fs';
+import { readOnlyPreview } from './dev/readOnlyPreview';
 
 // Get version from environment, git tag, or package.json
 function getVersion(): string {
@@ -38,6 +39,7 @@ function getVersion(): string {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
+    readOnlyPreview(),
     react(),
     viteSingleFile({
       removeViteModuleLoader: true

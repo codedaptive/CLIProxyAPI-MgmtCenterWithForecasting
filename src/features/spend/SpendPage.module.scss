@@ -1,0 +1,538 @@
+.page {
+  width: 100%;
+  min-width: 0;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 0 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  color: var(--text-primary);
+}
+.header,
+.sectionHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.header h1 {
+  margin: 0;
+  font-size: 26px;
+  letter-spacing: -0.7px;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.controls label,
+.priceForm label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.controls input,
+.controls select,
+.priceForm input {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 9px;
+  font: inherit;
+}
+.priceForm input {
+  width: 100px;
+}
+input:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+.tableScroll:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 3px;
+}
+.subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  border-left: 3px solid var(--viz-success);
+  background: var(--bg-secondary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.notice strong {
+  color: var(--text-primary);
+}
+.notice span:last-child {
+  flex-basis: 100%;
+}
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+.metrics article {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 9px;
+  background: var(--bg-secondary);
+  padding: 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+}
+.metrics article > span {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.metrics strong {
+  font-size: 23px;
+  letter-spacing: -0.6px;
+  font-variant-numeric: tabular-nums;
+}
+.metrics small {
+  grid-column: 1/-1;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  font-size: 11px;
+}
+.panel {
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  padding: 20px;
+  border-radius: 14px;
+  min-width: 0;
+}
+.sectionHead h2 {
+  font-size: 18px;
+  margin: 5px 0 12px;
+}
+.sectionHead h3 {
+  font-size: 16px;
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+}
+.sectionHead > span,
+.eyebrow {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+.tableScroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.tableScroll table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.tableScroll th {
+  color: var(--text-secondary);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  font-weight: 500;
+}
+.tableScroll td,
+.tableScroll th {
+  text-align: right;
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+.tableScroll td:first-child,
+.tableScroll th:first-child {
+  text-align: left;
+  padding-left: 0;
+}
+.tableScroll td:last-child,
+.tableScroll th:last-child {
+  padding-right: 0;
+}
+.tableScroll tr:last-child td {
+  border-bottom: 0;
+}
+.tableScroll td strong {
+  font-weight: 500;
+}
+.tableScroll td small {
+  display: block;
+  margin-top: 5px;
+}
+.track {
+  display: inline-block;
+  width: 60px;
+  height: 5px;
+  margin-left: 12px;
+  background: var(--border-color);
+  border-radius: 8px;
+  vertical-align: middle;
+  overflow: hidden;
+}
+.track > span {
+  display: block;
+  background: var(--viz-success);
+  height: 100%;
+  border-radius: inherit;
+}
+.emphasis {
+  font-weight: 600;
+}
+.empty {
+  font-size: 13px;
+  color: var(--text-secondary);
+  padding: 16px 0;
+}
+.accounts {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+.priceForm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.priceForm [role='alert'],
+.warning {
+  color: var(--amber-color);
+  font-size: 12px;
+}
+.accountSummary {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin: 10px 0;
+}
+.providerGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.providerGrid details {
+  padding: 12px 0;
+  border-top: 1px solid var(--border-color);
+  min-width: 0;
+}
+.providerGrid summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.providerGrid summary::before {
+  content: '›';
+  color: var(--text-secondary);
+}
+.providerGrid details[open] summary::before {
+  content: '⌄';
+}
+.providerGrid summary strong {
+  margin-right: auto;
+}
+.providerGrid summary small {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+summary {
+  cursor: pointer;
+  font-size: 14px;
+}
+.sources {
+  display: flex;
+  gap: 18px;
+  margin: 16px 0;
+  text-transform: capitalize;
+}
+.sources a {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+@media (max-width: 1100px) {
+  .metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+@media (max-width: 640px) {
+  .page {
+    gap: 16px;
+  }
+  .controls {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .controls label {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .sectionHead {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .metrics {
+    gap: 8px;
+  }
+  .metrics article {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .metrics strong {
+    font-size: 22px;
+  }
+  .panel {
+    padding: 14px;
+  }
+  .priceForm {
+    width: 100%;
+  }
+  .priceForm label {
+    flex: 1;
+  }
+  .priceForm input {
+    margin-left: auto;
+  }
+  .tableScroll td,
+  .tableScroll th {
+    padding: 12px 9px;
+  }
+}
+
+.expandModel {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.expandModel > span {
+  width: 10px;
+  color: var(--text-secondary);
+}
+.expandModel:focus-visible {
+  outline: 2px solid var(--text-secondary);
+  outline-offset: 4px;
+  border-radius: 3px;
+}
+.tableScroll .detailRow > td {
+  padding: 0 0 14px;
+  white-space: normal;
+}
+.tokenDetails {
+  padding: 12px 16px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+}
+.tokenDetails p {
+  margin: 0 0 8px;
+  max-width: 760px;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.6;
+}
+.tokenDetails th {
+  white-space: normal;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+.monthPicker {
+  position: relative;
+}
+.monthPicker > summary {
+  list-style: none;
+  padding: 9px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 13px;
+}
+.monthPicker > summary::-webkit-details-marker {
+  display: none;
+}
+.monthPopup {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  width: 260px;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-secondary);
+  box-shadow: 0 8px 24px #0003;
+}
+.monthYear {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.monthGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.monthPopup button {
+  cursor: pointer;
+  padding: 9px;
+  border-radius: 6px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+.monthPopup button[aria-pressed='true'] {
+  border-color: var(--viz-success);
+  background: var(--bg-tertiary);
+  font-weight: 700;
+}
+.monthPopup button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.settingsRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+.settingsRow > strong {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+.quotaChart {
+  width: 100%;
+  height: 230px;
+  display: block;
+  color: var(--text-secondary);
+}
+.quotaLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 10px;
+  font-size: 12px;
+}
+.quotaLegend i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+.quotaReadout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 0;
+  font-size: 12px;
+  min-height: 36px;
+}
+.metrics {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.sources {
+  flex-wrap: wrap;
+}
+.quotaExplanation {
+  margin-top: 12px;
+  color: var(--text-secondary);
+}
+.quotaExplanation summary {
+  font-size: 12px;
+}
+.quotaExplanation p {
+  margin-top: 8px;
+}
+.quotaZoom {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 2px 0 12px;
+}
+.quotaZoom input {
+  flex: 1;
+  min-width: 140px;
+  max-width: 360px;
+  accent-color: var(--primary-color);
+}
+.quotaZoom span {
+  font-variant-numeric: tabular-nums;
+}
+
+.chartUnit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+.chartUnit select {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  padding: 8px;
+}
+.modelLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.modelLegend details {
+  min-width: 0;
+  max-width: 100%;
+}
+.modelLegend summary {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.modelLegend .quotaLegend {
+  padding: 8px;
+  margin: 0;
+}
+.modelSwatches {
+  display: inline-flex;
+  margin: 0 6px;
+  vertical-align: middle;
+}
+.modelSwatches i {
+  width: 6px;
+  height: 10px;
+}

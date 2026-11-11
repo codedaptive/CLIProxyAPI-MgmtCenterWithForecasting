@@ -11,6 +11,7 @@
         "@uiw/react-codemirror": "^4.25.11",
         "axios": "1.18.1",
         "i18next": "^26.3.6",
+        "javascript-lp-solver": "1.0.3",
         "motion": "^12.42.2",
         "react": "^19.2.7",
         "react-dom": "^19.2.7",
@@ -406,6 +407,8 @@
     "is-number": ["is-number@7.0.0", "", {}, "sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng=="],
 
     "isexe": ["isexe@2.0.0", "", {}, ""],
+
+    "javascript-lp-solver": ["javascript-lp-solver@1.0.3", "", {}, "sha512-+qUYrubmn227YTz25uf9wOTlgB3wFKGtutECxL1shjOkgi/Tcn3SpnC7+T9rxhv/JNOxLIfZ3O6wEx0FwLlXbw=="],
 
     "js-tokens": ["js-tokens@4.0.0", "", {}, ""],
 

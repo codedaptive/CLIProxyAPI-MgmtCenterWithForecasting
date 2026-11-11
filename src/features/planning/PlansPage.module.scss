@@ -1,0 +1,157 @@
+.accounts {
+  container-type: inline-size;
+
+  > h2 {
+    margin: 0 0 8px;
+    font-size: 18px;
+  }
+}
+
+.accountRow {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.8fr) minmax(0, 2.2fr);
+  align-items: start;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border-color);
+
+  &:first-of-type {
+    margin-top: 10px;
+  }
+
+  &:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+  padding-top: 2px;
+
+  strong {
+    font-size: 13px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+}
+
+.provider,
+.inactive {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.provider {
+  font-weight: 600;
+}
+
+.inactive {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-primary);
+}
+
+.planForm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 142px auto;
+  align-items: start;
+  gap: 6px 12px;
+  min-width: 0;
+  margin: 0;
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--text-secondary);
+  }
+
+  input,
+  select {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 38px;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    font: inherit;
+    font-size: 12px;
+  }
+
+  input:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--text-secondary);
+    outline-offset: 2px;
+  }
+}
+
+.planSelect {
+  grid-column: 1;
+}
+
+.renewal {
+  grid-column: 2;
+}
+
+.save {
+  grid-column: 3;
+  margin-top: 22px;
+  height: 38px;
+}
+
+.price,
+.message {
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+@container (max-width: 850px) {
+  .accountRow {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .identity {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px 10px;
+  }
+}
+
+@container (max-width: 520px) {
+  .planForm {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .planSelect {
+    grid-column: 1 / -1;
+  }
+
+  .renewal {
+    grid-column: 1;
+  }
+
+  .save {
+    grid-column: 2;
+  }
+
+  .identity strong {
+    flex-basis: 100%;
+  }
+}

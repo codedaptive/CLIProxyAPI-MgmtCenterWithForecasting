@@ -1,0 +1,218 @@
+.home {
+  position: relative;
+  z-index: 1;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--bg-primary);
+  box-shadow: var(--shadow);
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 32px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  h1 {
+    margin: 8px 0 12px;
+    font-size: clamp(25px, 3vw, 38px);
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+  }
+}
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+.subtitle {
+  margin: 0;
+  max-width: 520px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+.badge {
+  display: inline-flex;
+  flex-shrink: 0;
+  gap: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  border-radius: 30px;
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+.badge[data-connected='true'] {
+  color: var(--success-badge-text);
+  background: var(--success-badge-bg);
+}
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+.connection,
+.client {
+  min-width: 0;
+  padding: 28px 32px;
+}
+.connection {
+  border-right: 1px solid var(--border-color);
+}
+.label {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.address {
+  display: block;
+  font-size: 17px;
+  overflow-wrap: anywhere;
+  font-family: $font-mono;
+  margin-bottom: 18px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+.note {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin: 14px 0;
+}
+.warning {
+  font-size: 12px;
+  line-height: 1.6;
+  padding: 10px;
+  background: var(--warning-bg);
+  color: var(--warning-text);
+  border-radius: 8px;
+}
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 26px 0 0;
+  li {
+    display: flex;
+    gap: 14px;
+    padding: 15px 0;
+    border-top: 1px solid var(--border-color);
+  }
+  strong {
+    font-size: 14px;
+  }
+  p {
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 5px 0 8px;
+    color: var(--text-secondary);
+  }
+  a {
+    display: inline-block;
+    font-size: 12px;
+    margin-right: 16px;
+  }
+}
+.number {
+  font-family: $font-mono;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding-top: 3px;
+}
+.client h2 {
+  font-size: 18px;
+  margin: 0 0 20px;
+}
+.tabs {
+  display: flex;
+  padding: 4px;
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+  gap: 4px;
+  button {
+    flex: 1;
+    padding: 10px 12px;
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+    border-radius: 7px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  button[aria-pressed='true'] {
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    box-shadow: var(--shadow);
+    font-weight: 600;
+  }
+  button:focus-visible {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+  }
+}
+.code {
+  margin: 18px 0;
+  padding: 18px;
+  min-height: 200px;
+  overflow: auto;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  font: 12px/1.8 $font-mono;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.code code {
+  font: inherit;
+}
+
+.feedback {
+  min-height: 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+@media (max-width: 800px) {
+  .header {
+    flex-direction: column;
+    padding: 24px;
+  }
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .connection,
+  .client {
+    padding: 24px;
+  }
+  .connection {
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+}
+
+.shellPicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  select {
+    min-width: 0;
+    max-width: 100%;
+    padding: 8px;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+  }
+}
