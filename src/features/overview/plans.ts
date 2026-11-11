@@ -3,7 +3,12 @@ import type { AuthFileItem, ClaudeProfileResponse } from '@/types';
 import { apiCallApi } from '@/services/api/apiCall';
 import { CLAUDE_PROFILE_URL, CLAUDE_REQUEST_HEADERS } from '@/utils/quota/constants';
 import { resolveClaudePlanType } from '@/features/quota/providers/claude/data';
-import { normalizePlanType, resolveCodexPlanType, PREMIUM_CODEX_PLAN_TYPES } from '@/utils/quota';
+import {
+  normalizePlanType,
+  resolveCodexPlanType,
+  PRO_LITE_CODEX_PLAN_TYPES,
+  PRO_MAX_CODEX_PLAN_TYPES,
+} from '@/utils/quota';
 import type { ResetQuotaAccount } from '@/services/api/overview';
 import { isRecord } from '@/utils/helpers';
 import { providerOf } from './model';
@@ -35,7 +40,8 @@ export function overviewPlanLabel(
   if (!plan) return null;
   if (plan === 'self_serve_business_prolite') return t('codex_quota.plan_business_premium');
   if (plan === 'pro') return t('codex_quota.plan_pro');
-  if (PREMIUM_CODEX_PLAN_TYPES.has(plan)) return t('codex_quota.plan_prolite');
+  if (PRO_MAX_CODEX_PLAN_TYPES.has(plan)) return t('codex_quota.plan_promax');
+  if (PRO_LITE_CODEX_PLAN_TYPES.has(plan)) return t('codex_quota.plan_prolite');
   if (['plus', 'team', 'free'].includes(plan)) return t(`codex_quota.plan_${plan}`);
   return plan;
 }

@@ -7,7 +7,7 @@ backend checkout used to verify the contract was tag `v8.0.30`, commit
 `5be2cdab0869cbaa3d401891f740aebf7e15aa99` (`redisqueue/plugin.go`,
 `usage/accounting.go`, `server_management_v8.go`, `server_reload.go`).
 
-Node 24+ with built-in SQLite is required. No extra dependencies. Run:
+Node 24+ with built-in SQLite is required. No extra runtime dependencies. Run:
 
 ```sh
 node scripts/spend/server.mjs
@@ -223,7 +223,7 @@ and derives bounded quota/token calibration evidence from the existing database.
 The authenticated `view=planning` extension exposes no credentials or prompt content.
 Normal reports include optional `terms`; existing plan PUT requests remain valid,
 and optional terms update atomically with the monthly-equivalent price. Annual
-price conversion happens in the shared UI editor. See `HOME_SETUP.md` for the
+price conversion happens in the shared UI editor. See [the setup guide](../../docs/codedaptive-setup.md) for the
 calibration/forecast assumptions and deployment procedure.
 
 Tests include integer quota counters with unchanged reads, reset boundaries,

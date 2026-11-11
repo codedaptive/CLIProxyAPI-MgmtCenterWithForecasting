@@ -1,4 +1,4 @@
-#!/opt/homebrew/bin/python3
+#!/usr/bin/env python3
 """Local bearer-token resolver for Codex desktop and CLI; stdout is consumed by Codex."""
 import json
 from pathlib import Path

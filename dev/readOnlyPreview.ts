@@ -41,7 +41,10 @@ export function readOnlyPreview(): Plugin {
       server: {
         host: '127.0.0.1',
         proxy: {
-          '/minillm/spend': { target: 'http://127.0.0.1:8318', changeOrigin: true },
+          '/minillm/spend': {
+            target: process.env.MINILLM_PREVIEW_SPEND || 'http://127.0.0.1:8318',
+            changeOrigin: true,
+          },
           ...Object.fromEntries(
             API_PATHS.map((prefix) => [
               prefix,

@@ -8,6 +8,21 @@ import { resolveClaudePlanType } from '../src/features/quota/providers/claude/da
 const i18n = i18next.createInstance();
 await i18n.init({ lng: 'en', resources: { en: { translation: en } } });
 const t = i18n.t.bind(i18n);
+test.each([
+  ['pro', 'Pro 200'],
+  ['prolite', 'Pro 100'],
+  ['pro-lite', 'Pro 100'],
+  ['promax', 'Pro 500'],
+  ['pro_max', 'Pro 500'],
+  ['self_serve_business_prolite', 'Business Premium'],
+])('labels the upstream Codex plan %s', (plan, label) => {
+  const snapshot = normalizeResetRouterStatus({
+    accounts: { one: { provider: 'codex', quota: { plan_type: plan } } },
+  });
+  expect(overviewPlanLabel({ name: 'one', type: 'codex' }, snapshot.accounts[0], null, t)).toBe(
+    label
+  );
+});
 test('preserves Codex plan from plugin snapshot and labels Plus', () => {
   const snapshot = normalizeResetRouterStatus({
     accounts: { one: { provider: 'codex', quota: { plan_type: 'plus' } } },

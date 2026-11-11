@@ -1,4 +1,4 @@
-#!/opt/homebrew/bin/python3
+#!/usr/bin/env python3
 """Launch installed clients through MiniLLM without changing their defaults."""
 import json
 import os

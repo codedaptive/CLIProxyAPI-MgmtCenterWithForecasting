@@ -1,4 +1,4 @@
-#!/opt/homebrew/bin/python3
+#!/usr/bin/env python3
 """Local controls for the MiniLLM proxy. Credentials never appear in command arguments."""
 import json
 from pathlib import Path

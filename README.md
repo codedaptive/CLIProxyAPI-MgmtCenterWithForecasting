@@ -1,3 +1,22 @@
+# Codedaptive Proxy Dashboard
+
+The Codedaptive fork adds **Overview**, **Spend Analysis**, **Subscription Planning**,
+and shared **Plans** settings to the upstream management UI.
+
+Start with [the Codedaptive setup guide](docs/codedaptive-setup.md). The reporting
+pages use a separate Node/SQLite collector; installing the HTML alone does not
+collect usage history. The proxy core and routing plugin remain separate services.
+
+- [Proxy core](https://github.com/codedaptive/CLIProxyAPI)
+- [Quota and role router](https://github.com/codedaptive/quota-router)
+- Upstream baseline: **Management Center v1.27.4**; integration target: **CLIProxyAPI v8.0.67**.
+- Existing MiniLLM installations keep their paths, database, and plugin IDs.
+
+The upstream documentation follows. Its upstream release links provide the original
+UI, without the Codedaptive additions; build this fork to obtain those additions.
+
+---
+
 <div align="center">
 
 <img src="./logo.jpg" alt="CLI Proxy API" width="144">
