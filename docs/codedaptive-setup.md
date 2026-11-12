@@ -5,8 +5,8 @@
 | Repository / component | Purpose |
 | --- | --- |
 | `codedaptive/CLIProxyAPI` | Proxy core; upstream v8.0.67 plus auto-mode regression coverage |
-| `codedaptive/Cli-Proxy-API-Management-Center` | This dashboard, spend collector, and subscription planner |
-| `codedaptive/quota-router` | Optional quota routing, desktop affinity, roles, and weekly reserve |
+| `codedaptive/CLIProxyAPI-MgmtCenterWithForecasting` | This dashboard, spend collector, and subscription planner |
+| `codedaptive/CLIProxyAPI-QuotaRouter` | Optional quota routing, desktop affinity, roles, and weekly reserve |
 
 The dashboard builds to one `dist/index.html`. Caddy serves that as
 `management.html`, forwards `/minillm/spend` to the collector, and forwards other
