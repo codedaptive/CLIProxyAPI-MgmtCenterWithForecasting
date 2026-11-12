@@ -2,6 +2,9 @@
 
 # CLIProxyAPI Management Center with Forecasting
 
+A fork of [router-for-me/Cli-Proxy-API-Management-Center](https://github.com/router-for-me/Cli-Proxy-API-Management-Center), optimized for use with
+**[CodeTeam - CE](https://github.com/codedaptive/codeteam-ce)**.
+
 ### See your traffic, understand your spend, and plan your subscriptions.
 
 **What ran. What it cost. What capacity comes next.**
@@ -13,6 +16,9 @@
 [Start here](#start-here) · [Works with](#works-with) · [Documentation](#documentation) · [Issues](https://github.com/codedaptive/CLIProxyAPI-MgmtCenterWithForecasting/issues)
 
 </div>
+
+CodeTeam - CE is optional: this fork also works with other compatible clients and
+agent workflows.
 
 A model gateway can tell you that a request succeeded. Running a team of agents
 raises more questions: which accounts are carrying the work, how much quota is
@@ -63,7 +69,7 @@ updated independently:
 
 These Codedaptive projects complement the stack on the agent side:
 
-- **[CodeTeam CE](https://github.com/codedaptive/codeteam-ce)** runs a coordinated
+- **[CodeTeam - CE](https://github.com/codedaptive/codeteam-ce)** runs a coordinated
   team of coding agents. Its agents can use the proxy for model access and the
   router's role names for task-specific model preferences.
 - **[MOOTx01 CE](https://github.com/codedaptive/mootx01-ce)** gives agents persistent
