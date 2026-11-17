@@ -125,6 +125,15 @@ export const TOKEN_RATES: Record<string, TokenRate> = {
   'claude-haiku-4-5': claude(1, 5, 0.1),
   'gpt-6.1-terra': openai(1, 5, 0.05),
   'gpt-6.1-sol': openai(2, 10, 0.1),
+  // GPT-6.2 standard rates verified 2026-11-17; cache writes use 30-minute retention.
+  'gpt-6.2-sol': {
+    ...openai(2, 10, 0.1),
+    source: 'https://developers.openai.com/api/docs/models/gpt-6.2-sol',
+  },
+  'gpt-6.2-astra': {
+    ...openai(8, 40, 0.4),
+    source: 'https://developers.openai.com/api/docs/models/gpt-6.2-astra',
+  },
   'gpt-6-astra': openai(10, 50, 1),
   'gpt-6-luna': openai(0.1, 0.5, 0.01),
   'gpt-5.6-sol': openai(4, 20, 0.4),

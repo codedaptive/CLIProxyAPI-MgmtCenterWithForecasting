@@ -23,6 +23,23 @@ const row = (overrides: Partial<UsageRow> = {}): UsageRow => ({
   ...overrides,
 });
 describe('subscription allocation', () => {
+  it('prices GPT-6.2 input, output, cache reads and writes at both context tiers', () => {
+    for (const [model, shortCost, longCost] of [
+      ['gpt-6.2-sol', 14.6, 24.2],
+      ['gpt-6.2-astra', 58.4, 96.8],
+    ] as const) {
+      const usage = row({
+        model,
+        input: 1_000_000,
+        output: 1_000_000,
+        cacheRead: 1_000_000,
+        cacheWrite: 1_000_000,
+        prompt: 272000,
+      });
+      expect(apiEquivalent(usage)).toBeCloseTo(shortCost);
+      expect(apiEquivalent({ ...usage, prompt: 272001 })).toBeCloseTo(longCost);
+    }
+  });
   it('estimates compatible-provider cache hits and misses separately without an unrelated long-context tier', () => {
     for (const [model, expected] of [
       ['deepseek-flash', 1.506],
