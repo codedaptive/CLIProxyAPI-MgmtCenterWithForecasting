@@ -40,6 +40,9 @@ export function subscriptionTokenCosts(slices: RollingSlice[], provider = '') {
       // Pay-as-you-go/unconfigured accounts have no subscription cost to allocate.
       if (account.fee === null || (provider && account.provider !== provider)) continue;
       for (const model of account.models) {
+        // Empty attempts contribute neither allocated fees nor tokens. They must not
+        // invalidate measured usage of the same model on another subscription.
+        if (model.tokens === 0 && model.missing === 0) continue;
         const value = models.get(model.model) ?? { cost: 0, tokens: 0, incomplete: false };
         value.cost += model.allocated;
         value.tokens += model.tokens;

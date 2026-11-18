@@ -91,6 +91,23 @@ test('partial recorder coverage prorates only observed time; zero-fee plan stays
   s.report.plans.a = 0;
   expect(subscriptionTokenCosts([s]).get('gpt-6.1-terra')).toBe(0);
 });
+test('empty attempts on an idle subscription do not erase another account’s rolling rate', () => {
+  const s = slice('2026-11');
+  s.report.rows = [row('claude-haiku-5-5')];
+  const expected = subscriptionTokenCosts([s]).get('claude-haiku-5-5');
+  s.report.plans.b = 200;
+  s.report.rows.push({ ...row('claude-haiku-5-5', 'b', 0), failed: 1 });
+  expect(subscriptionTokenCosts([s]).get('claude-haiku-5-5')).toBe(expected);
+  s.report.rows = [row('claude-haiku-5-5', 'b', 0)];
+  expect(subscriptionTokenCosts([s]).size).toBe(0);
+});
+test('missing token data still invalidates rolling rates even when recorded tokens are zero', () => {
+  const s = slice('2026-11');
+  s.report.rows = [row('claude-haiku-5-5')];
+  s.report.plans.b = 200;
+  s.report.rows.push({ ...row('claude-haiku-5-5', 'b', 0), incomplete: 1 });
+  expect(subscriptionTokenCosts([s]).get('claude-haiku-5-5')).toBeNull();
+});
 test('three rate cells appear only when requested and honor sticky cost visibility', () => {
   const model = analyzeSpend([row('gpt-6.1-terra')], { a: 300 })[0].models[0];
   const tokenCosts = { days30: 2, hours24: 3 };
