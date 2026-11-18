@@ -108,6 +108,11 @@ export const TOKEN_RATES: Record<string, TokenRate> = {
     source: RATE_SOURCES.deepseek,
   },
   'claude-fable-5-1': claude(10, 50, 0.25),
+  // Standard global rates verified 2026-11-18; five-minute cache-write benchmark.
+  'claude-fable-5-2': {
+    ...claude(8, 40, 0.2),
+    source: 'https://platform.claude.com/docs/en/models/fable-5-2/overview',
+  },
   'claude-opus-5-5': claude(4, 20, 0.2),
   'claude-sonnet-5-5': claude(2, 10, 0.1),
   'claude-haiku-5-5': {

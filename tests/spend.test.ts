@@ -23,6 +23,28 @@ const row = (overrides: Partial<UsageRow> = {}): UsageRow => ({
   ...overrides,
 });
 describe('subscription allocation', () => {
+  it('prices Fable 5.2 token categories and restores mixed-model subscription allocation', () => {
+    const fable = row({
+      model: 'claude-fable-5-2',
+      input: 1_000_000,
+      output: 1_000_000,
+      cacheRead: 1_000_000,
+      cacheWrite: 1_000_000,
+      prompt: 900000,
+    });
+    expect(apiContributions(fable)).toEqual({
+      input: 8,
+      output: 40,
+      cacheRead: 0.2,
+      cacheWrite: 10,
+    });
+    const [account] = analyzeSpend([fable, row()], { max: 200 });
+    expect(account.missing).toBe(0);
+    expect(account.allocated).toBeCloseTo(200);
+    expect(account.models.find((m) => m.model === fable.model)?.allocated).toBeCloseTo(
+      (58.2 / 62.2) * 200
+    );
+  });
   it('prices GPT-6.2 input, output, cache reads and writes at both context tiers', () => {
     for (const [model, shortCost, longCost] of [
       ['gpt-6.2-sol', 14.6, 24.2],
