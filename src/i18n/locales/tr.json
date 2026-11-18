@@ -2850,7 +2850,7 @@
     "terra_rates_hint": "GPT-6.1 Terra rates verified {{date}}. Standard 30-minute cache writes; long-context pricing applies above 272K prompt tokens.",
     "quota_title": "Quota available",
     "quota_range": "Past 14 days · next 8 days",
-    "quota_method": "Each measured account has equal weight; availability is its lowest quota window. Missing history is estimated from recorded token activity, calibrated to current window usage; where that calibration is unavailable, recent burn or the current cycle average is used. Earlier account membership and reset cycles are assumed. Forecast uses the last 3 hours of observed burn and assumes known reset cadences repeat. Estimates are not measurements; API-only providers without quota readings are excluded.",
+    "quota_method": "Each measured account has equal weight; availability is its lowest quota window. Missing history is estimated from recorded token activity, calibrated to current window usage; where that calibration is unavailable, recent burn or the current cycle average is used. Earlier account membership and reset cycles are assumed. Forecast uses the last 3 hours of observed burn and assumes known reset cadences repeat. Estimates are not measurements; API-only providers without quota readings are excluded. Kotanın tükendiği süre sıfır talep sayılmaz; tahmin, kaydedilen iki hafta içindeki ölçülebilen son üç saatlik tüketim hızını kullanır.",
     "quota_unavailable": "Quota collection is unavailable; historical observations may still be shown.",
     "quota_empty": "No recorded quota history for this selection yet. Collection continues while this page is closed.",
     "now": "Now",

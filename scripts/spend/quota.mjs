@@ -6,14 +6,18 @@ export function kpatdevQuotaStatus(status, detail, credentials) {
   for (const a of detail.accounts) {
     const credential = credentials.files.find(f => f.id === a.id || f.name === a.id);
     if (!credential || !Array.isArray(a.windows)) continue;
-    const observations = a.windows.map(w => Date.parse(w.observed_at));
+    // Response headers refresh account-wide limits independently of optional
+    // model limits. A stale Fable reading must not remove a fresh whole account.
+    const primary = a.windows.filter(w => w.kind !== 'model_weekly');
+    const observations = primary.map(w => Date.parse(w.observed_at));
     const readAt = observations.length && observations.every(Number.isFinite) ? Math.min(...observations) : NaN;
     const quota = {read_at: Number.isFinite(readAt) ? new Date(readAt).toISOString() : null};
     for (const w of a.windows) {
       const id = w.kind === 'weekly' ? 'seven_day' : w.kind === 'model_weekly' ? `seven_day_${w.family}` : w.key;
-      quota[id] = {utilization:w.used_percent, resets_at:w.resets_at};
+      quota[id] = {utilization:w.used_percent, resets_at:w.resets_at,
+        read_at:w.observed_at, stale:w.stale === true, model_specific:w.kind === 'model_weekly'};
     }
-    accounts[a.id] = {auth_index:credential.auth_index, provider:a.provider, quota, consecutive_failures:a.poll_error || a.windows.some(w => w.stale) ? 1 : 0};
+    accounts[a.id] = {auth_index:credential.auth_index, provider:a.provider, quota, consecutive_failures:a.poll_error || primary.some(w => w.stale) ? 1 : 0};
   }
   return {...status, accounts};
 }
@@ -25,13 +29,15 @@ export function quotaSnapshot(status, credentials, at = Date.now()) {
     const readAt = Date.parse(a.quota?.read_at);
     if (!active.has(a.auth_index) || a.consecutive_failures > 0 || !Number.isFinite(readAt) || at - readAt > 20 * 60000 || readAt > at + 60000) return [];
     // Don't drop a limiting window just because its cached reset has elapsed.
-    if (Object.values(a.quota ?? {}).some(w => w && typeof w === 'object' && Number.isFinite(w.utilization) && Number.isFinite(Date.parse(w.resets_at)) && Date.parse(w.resets_at) <= at)) return [];
+    if (Object.values(a.quota ?? {}).some(w => w && typeof w === 'object' && !w.model_specific && Number.isFinite(w.utilization) && Number.isFinite(Date.parse(w.resets_at)) && Date.parse(w.resets_at) <= at)) return [];
     const windows = Object.entries(a.quota ?? {}).flatMap(([id, w]) => {
       if (!w || typeof w !== 'object' || !Number.isFinite(w.utilization)) return [];
+      const windowReadAt = w.read_at === undefined ? readAt : Date.parse(w.read_at);
+      if (w.stale || !Number.isFinite(windowReadAt) || at - windowReadAt > 20 * 60000 || windowReadAt > at + 60000) return [];
       const resetAt = Date.parse(w.resets_at);
       // An elapsed reset is not proof that quota has replenished.
       if (Number.isFinite(resetAt) && resetAt <= at) return [];
-      return [{id, remaining: Math.max(0, Math.min(100, 100 - w.utilization)), resetAt: Number.isFinite(resetAt) ? resetAt : null}];
+      return [{id, remaining: Math.max(0, Math.min(100, 100 - w.utilization)), resetAt: Number.isFinite(resetAt) ? resetAt : null, readAt:windowReadAt}];
     });
     return windows.length ? [{id: String(a.auth_index), provider: String(a.provider), readAt, windows}] : [];
   });

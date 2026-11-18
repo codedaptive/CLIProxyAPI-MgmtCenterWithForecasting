@@ -229,3 +229,17 @@ calibration/forecast assumptions and deployment procedure.
 Tests include integer quota counters with unchanged reads, reset boundaries,
 incomplete usage, mixed-model attribution, shared quotas, annual dates, transaction
 rollback, and authenticated extension reads.
+
+## Quota forecast freshness (2026-11-18)
+
+The sampler evaluates account-wide quota freshness separately from model-specific
+windows. A stale or expired Fable window is omitted without dropping fresh weekly
+and five-hour readings for the account. Each retained window carries its own
+observation timestamp so repeated model-specific cache reads cannot masquerade as
+new observations when response headers update another window.
+
+Forecast burn excludes intervals that start at zero remaining quota. For an
+exhausted window without recent measurable burn, it uses the three-hour rate ending
+at its last nonzero observation within the retained two-week history. Without a
+usable rate the account remains held at its current reading. Historical samples
+and recorded token counts are not rewritten by this change.

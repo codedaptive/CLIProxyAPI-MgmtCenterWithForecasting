@@ -30,3 +30,24 @@ test('custom quota reader preserves credential identity and rejects stale observ
  snap=quotaSnapshot(kpatdevQuotaStatus({},detail,credentials),credentials,at);
  assert.deepEqual(snap.accounts.map(a=>a.id),['b']);
 });
+
+test('stale model quota does not discard fresh account-wide quota',()=>{
+ const at=Date.now(), credentials={files:[{name:'claude.json',auth_index:'a'}]};
+ const main={key:'weekly',kind:'weekly',used_percent:40,observed_at:new Date(at).toISOString(),resets_at:new Date(at+86400000).toISOString()};
+ const fable={...main,key:'model_weekly:fable',kind:'model_weekly',family:'fable',used_percent:5,observed_at:new Date(at-30*60000).toISOString(),stale:true};
+ const detail={accounts:[{id:'claude.json',provider:'claude',windows:[main,fable]}]};
+ let snap=quotaSnapshot(kpatdevQuotaStatus({},detail,credentials),credentials,at);
+ assert.equal(snap.accounts.length,1);
+ assert.deepEqual(snap.accounts[0].windows.map(w=>w.id),['seven_day']);
+ assert.equal(snap.accounts[0].readAt,at);
+ assert.equal(snap.accounts[0].windows[0].remaining,60);
+ // Fresh optional windows keep their own observation time, not the header read time.
+ detail.accounts[0].windows[1]={...fable,stale:false,observed_at:new Date(at-5*60000).toISOString()};
+ snap=quotaSnapshot(kpatdevQuotaStatus({},detail,credentials),credentials,at);
+ assert.equal(snap.accounts[0].windows[1].readAt,at-5*60000);
+ // An elapsed optional reset is also not proof the whole account disappeared.
+ detail.accounts[0].windows[1].resets_at=new Date(at-1).toISOString();
+ snap=quotaSnapshot(kpatdevQuotaStatus({},detail,credentials),credentials,at);
+ assert.equal(snap.accounts.length,1);
+ assert.equal(snap.accounts[0].windows.length,1);
+});

@@ -2856,7 +2856,7 @@
     "terra_rates_hint": "Giá GPT-6.1 Terra được xác minh ngày {{date}}. Giá ghi bộ nhớ đệm tiêu chuẩn 30 phút; giá ngữ cảnh dài áp dụng trên 272K token đầu vào.",
     "quota_title": "Hạn mức còn lại",
     "quota_range": "14 ngày qua · 8 ngày tới",
-    "quota_method": "Mỗi tài khoản có trọng số bằng nhau, lấy cửa sổ hạn mức còn ít nhất. Lịch sử thiếu được ước tính từ token đã ghi, hiệu chỉnh theo mức dùng cửa sổ hiện tại; nếu không thể, dùng tốc độ gần đây hoặc trung bình chu kỳ hiện tại. Thành phần tài khoản và chu kỳ đặt lại trước đây là giả định. Dự báo dùng tốc độ 3 giờ qua và giả định chu kỳ đặt lại lặp lại. Ước tính không phải số đo; loại trừ nhà cung cấp không có dữ liệu hạn mức.",
+    "quota_method": "Mỗi tài khoản có trọng số bằng nhau, lấy cửa sổ hạn mức còn ít nhất. Lịch sử thiếu được ước tính từ token đã ghi, hiệu chỉnh theo mức dùng cửa sổ hiện tại; nếu không thể, dùng tốc độ gần đây hoặc trung bình chu kỳ hiện tại. Thành phần tài khoản và chu kỳ đặt lại trước đây là giả định. Dự báo dùng tốc độ 3 giờ qua và giả định chu kỳ đặt lại lặp lại. Ước tính không phải số đo; loại trừ nhà cung cấp không có dữ liệu hạn mức. Thời gian hết hạn mức không được tính là nhu cầu bằng không; dự báo dùng tốc độ tiêu thụ ba giờ đo được gần nhất trong hai tuần đã ghi.",
     "quota_unavailable": "Không thể thu thập hạn mức; số liệu lịch sử vẫn có thể hiển thị.",
     "quota_empty": "Chưa có lịch sử hạn mức cho lựa chọn này. Việc thu thập tiếp tục khi đóng trang.",
     "now": "Hiện tại",

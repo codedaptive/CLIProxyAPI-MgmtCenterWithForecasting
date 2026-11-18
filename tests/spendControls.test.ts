@@ -7,6 +7,7 @@ import { ModelSpendRows } from '../src/features/spend/ModelSpendRows';
 import {
   quotaSeries,
   windowBurn,
+  forecastBurn,
   available,
   type QuotaSample,
 } from '../src/features/spend/quotaModel';
@@ -83,6 +84,36 @@ test('burn ignores repeated reads, resets, stale gaps and out-of-window samples'
   expect(windowBurn([sample(30, 80), sample(0, 60)], 'a', 'weekly', now)).toBeNull();
   expect(windowBurn([sample(10, 20), sample(0, 100)], 'a', 'weekly', now)).toBeNull();
   expect(windowBurn([sample(190, 100), sample(0, 60)], 'a', 'weekly', now)).toBeNull();
+});
+
+test('exhausted intervals do not dilute burn or imply free capacity after reset', () => {
+  const reset = now + 3600000;
+  const samples = [sample(250, 80, reset), sample(240, 70, reset), sample(230, 0, reset)];
+  for (let ago = 180; ago >= 0; ago -= 10) samples.push(sample(ago, 0, reset));
+  expect(windowBurn(samples, 'a', 'weekly', now)).toBeNull();
+  expect(forecastBurn(samples, 'a', samples.at(-1)!.accounts[0].windows[0], now)).toBe(60);
+  const series = quotaSeries({ version: 1, now, error: null, samples });
+  expect(series.forecast[0].values.claude).toBe(0);
+  expect(series.forecast.find((p) => p.at === reset)?.values.claude).toBe(100);
+  expect(series.forecast.find((p) => p.at === reset + 3600000)?.values.claude).toBe(40);
+  expect(windowBurn([sample(20, 10), sample(10, 0), sample(0, 0)], 'a', 'weekly', now)).toBe(60);
+  expect(
+    forecastBurn(
+      [sample(10, 0), sample(0, 0)],
+      'a',
+      { id: 'weekly', remaining: 0, resetAt: reset },
+      now
+    )
+  ).toBeNull();
+  expect(windowBurn([sample(10, 70), sample(0, 70)], 'a', 'weekly', now)).toBe(0);
+});
+
+test('window burn uses per-window timestamps when header and model reads differ', () => {
+  const first = sample(10, 80),
+    last = sample(0, 70);
+  first.accounts[0].windows[0].readAt = now - 10 * 60000;
+  last.accounts[0].windows[0].readAt = now - 10 * 60000;
+  expect(windowBurn([first, last], 'a', 'weekly', now)).toBeNull();
 });
 test('forecast reaches zero, resets once, and stays within 0–100', () => {
   const reset = now + 3600000;

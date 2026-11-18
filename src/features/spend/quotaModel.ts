@@ -2,6 +2,7 @@ export interface QuotaWindow {
   id: string;
   remaining: number;
   resetAt: number | null;
+  readAt?: number;
 }
 export interface QuotaAccount {
   id: string;
@@ -49,24 +50,40 @@ export function windowBurn(
   for (const s of samples) {
     const a = s.accounts.find((a) => a.id === account);
     const w = a?.windows.find((w) => w.id === window);
-    if (!a || !w || a.readAt < now - 3 * HOUR || a.readAt > now) continue;
+    const readAt = w?.readAt ?? a?.readAt ?? NaN;
+    if (!a || !w || readAt < now - 3 * HOUR || readAt > now) continue;
     if (
       previous &&
-      a.readAt > previous.at &&
-      a.readAt - previous.at <= 20 * 60000 &&
+      previous.w.remaining > 0 &&
+      readAt > previous.at &&
+      readAt - previous.at <= 20 * 60000 &&
       ((previous.w.resetAt === null && w.resetAt === null) ||
         (previous.w.resetAt !== null &&
           w.resetAt !== null &&
           Math.abs(previous.w.resetAt - w.resetAt) <= 5000 &&
-          a.readAt < previous.w.resetAt)) &&
+          readAt < previous.w.resetAt)) &&
       w.remaining <= previous.w.remaining
     ) {
       consumed += previous.w.remaining - w.remaining;
-      elapsed += a.readAt - previous.at;
+      elapsed += readAt - previous.at;
     }
-    if (!previous || a.readAt > previous.at) previous = { at: a.readAt, w };
+    if (!previous || readAt > previous.at) previous = { at: readAt, w };
   }
   return elapsed >= 5 * 60000 ? consumed / (elapsed / HOUR) : null;
+}
+// Exhausted accounts cannot demonstrate zero demand. Reuse their last observed
+// three-hour burn before exhaustion when the recent interval is entirely blocked.
+export function forecastBurn(samples: QuotaSample[], account: string, w: QuotaWindow, now: number) {
+  const recent = windowBurn(samples, account, w.id, now);
+  if (recent !== null || w.remaining > 0) return recent;
+  for (let i = samples.length - 1; i >= 0; i--) {
+    const a = samples[i].accounts.find((a) => a.id === account);
+    const past = a?.windows.find((item) => item.id === w.id);
+    const at = past?.readAt ?? a?.readAt ?? NaN;
+    if (!past || past.remaining <= 0 || at > now || at < now - 14 * DAY) continue;
+    return windowBurn(samples, account, w.id, at);
+  }
+  return null;
 }
 export const DAY = 24 * HOUR;
 export function quotaViewport(now: number, zoom: number) {
@@ -106,7 +123,7 @@ export function quotaSeries(history: QuotaHistory, provider = '') {
     latest && history.now - latest.at <= 5 * 60000 && latest.accounts.length > 0 && !history.error;
   if (fresh) {
     const rates = latest.accounts.map((a) =>
-      a.windows.map((w) => windowBurn(samples, a.id, w.id, history.now))
+      a.windows.map((w) => forecastBurn(samples, a.id, w, history.now))
     );
     const ready = latest.accounts.map(
       (a, i) =>
