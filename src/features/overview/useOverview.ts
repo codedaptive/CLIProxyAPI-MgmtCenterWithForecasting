@@ -10,6 +10,7 @@ import type { ApiKeyUsageResponse } from '@/utils/recentRequests';
 import { sessionMatches, providerOf } from './model';
 import { readClaudePlan } from './plans';
 import { spendApi } from '@/services/api/spend';
+import { refreshOverviewQuota } from '@/services/api/overviewRefresh';
 
 export interface OverviewSnapshot {
   files: AuthFileItem[];
@@ -31,7 +32,7 @@ export function useOverview() {
   const refreshRef = useRef<() => Promise<void>>(async () => {});
   useEffect(() => {
     let active = true;
-    let busy = false;
+    let pending: Promise<void> | null = null;
     let topologyAt = 0;
     let plansLoading = false;
     const planTimes: Record<string, number> = {};
@@ -43,9 +44,8 @@ export function useOverview() {
     const revision = apiClient.getConnectionRevision();
     const current = () => sessionMatches(revision, apiClient.getConnectionRevision(), active);
     setSnapshot(null);
-    const refresh = async () => {
-      if (!connected || busy || !current()) return;
-      busy = true;
+    const load = async (forceQuota: boolean) => {
+      if (!connected || !current()) return;
       setLoading(true);
       try {
         const errors: string[] = [];
@@ -102,7 +102,17 @@ export function useOverview() {
         }
         errors.push(...topologyErrors);
         let quota: ResetRouterStatus | null = null;
+        let refreshError: unknown;
         if (overviewRouting(config).quotaPlugin) {
+          if (forceQuota) {
+            try {
+              await refreshOverviewQuota(apiBase, config, current);
+            } catch (error) {
+              refreshError = error;
+              errors.push('quota');
+            }
+          }
+          if (!current()) return;
           try {
             quota = await overviewApi.resetRouterStatus(apiBase, config);
           } catch {
@@ -121,6 +131,7 @@ export function useOverview() {
           readAt: Date.now(),
           plans: { ...plans },
         });
+        if (refreshError) throw refreshError;
         if (!plansLoading) {
           const pending = files.filter(
             (f) =>
@@ -153,13 +164,22 @@ export function useOverview() {
           }
         }
       } finally {
-        busy = false;
         if (current()) setLoading(false);
       }
     };
+    const refresh = (forceQuota = false): Promise<void> => {
+      if (pending)
+        return forceQuota
+          ? pending.catch(() => {}).then(() => (current() ? refresh(true) : undefined))
+          : pending.catch(() => {});
+      pending = load(forceQuota).finally(() => {
+        pending = null;
+      });
+      return pending;
+    };
     refreshRef.current = async () => {
       topologyAt = 0;
-      await refresh();
+      await refresh(true);
     };
     void refresh();
     const timer = window.setInterval(() => {

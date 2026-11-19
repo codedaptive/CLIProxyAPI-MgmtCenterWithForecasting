@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/Button';
@@ -16,6 +16,8 @@ import {
   sortQuotaAccounts,
 } from './quotaRows';
 import { overviewRouting } from '@/services/api/overview';
+import { OverviewQuotaRefreshError } from '@/services/api/overviewRefresh';
+import { useNotificationStore } from '@/stores';
 import { overviewQuotaSample } from './quotaSnapshot';
 import { useOverview } from './useOverview';
 import { overviewPlanLabel } from './plans';
@@ -44,9 +46,27 @@ export function OverviewPage() {
     connected,
     overviewNeedsDirectQuota(snapshot?.config)
   );
-  const loading = snapshotLoading || claudeQuota.loading;
+  const [manualLoading, setManualLoading] = useState(false);
+  const manualBusy = useRef(false);
+  const showNotification = useNotificationStore((s) => s.showNotification);
+  const loading = manualLoading || snapshotLoading || claudeQuota.loading;
   const refresh = async () => {
-    await Promise.all([refreshSnapshot(), claudeQuota.refresh()]);
+    if (manualBusy.current || !connected) return;
+    manualBusy.current = true;
+    setManualLoading(true);
+    try {
+      await Promise.all([refreshSnapshot(), claudeQuota.refresh()]);
+    } catch (error) {
+      showNotification(
+        error instanceof OverviewQuotaRefreshError
+          ? t(`overview.quota_refresh_${error.reason}`)
+          : `${t('notification.refresh_failed')}: ${error instanceof Error ? error.message : String(error)}`,
+        'error'
+      );
+    } finally {
+      manualBusy.current = false;
+      setManualLoading(false);
+    }
   };
   const [provider, setProvider] = useState('');
   const [search, setSearch] = useState('');

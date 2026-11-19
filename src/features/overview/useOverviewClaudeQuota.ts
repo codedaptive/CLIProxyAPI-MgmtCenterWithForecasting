@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import type { AuthFileItem } from '@/types';
 import { apiClient } from '@/services/api/client';
 import { useQuotaStore } from '@/stores/useQuotaStore';
@@ -49,15 +49,7 @@ export function useOverviewClaudeQuota(
     [files, connected, directReadsEnabled, loadQuota]
   );
 
-  useEffect(() => {
-    // The router already polls centrally; browser tabs must not duplicate those reads.
-    if (!directReadsEnabled) return;
-    if (document.visibilityState === 'visible') void refresh(false);
-    const timer = window.setInterval(() => {
-      if (document.visibilityState === 'visible') void refresh(false);
-    }, 30000);
-    return () => window.clearInterval(timer);
-  }, [refresh, directReadsEnabled]);
+  // No browser timer or mount checks: provider reads are explicitly requested only.
 
   return { cache, loading: batchLoading, refresh };
 }
