@@ -165,9 +165,14 @@ export function useOverview() {
     const timer = window.setInterval(() => {
       if (document.visibilityState === 'visible') void refresh();
     }, 30000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void refresh();
+    };
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
       active = false;
       window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, [apiBase, key, connected]);
   return { snapshot, loading, connected, refresh: () => refreshRef.current() };

@@ -7,6 +7,8 @@ export interface ResetQuotaWindow {
   labelKey?: string;
   used: number | null;
   resetAt: number | null;
+  readAt?: number | null;
+  stale?: boolean;
 }
 export interface ResetQuotaAccount {
   id: string;
@@ -85,7 +87,8 @@ export function normalizeKpatdevQuota(status: unknown, detail: unknown): ResetRo
     if (!isRecord(account) || typeof account.id !== 'string' || !Array.isArray(account.windows))
       return [];
     const windows = account.windows.filter(isRecord);
-    const observations = windows
+    const primary = windows.filter((w) => w.kind !== 'model_weekly');
+    const observations = primary
       .map((w) => dateMs(w.observed_at))
       .filter((n): n is number => n !== null);
     return [
@@ -94,8 +97,11 @@ export function normalizeKpatdevQuota(status: unknown, detail: unknown): ResetRo
         authIndex: '',
         provider: typeof account.provider === 'string' ? account.provider : 'unknown',
         planType: typeof account.plan === 'string' ? account.plan : undefined,
-        readAt: observations.length ? Math.min(...observations) : null,
-        failures: account.poll_error || windows.some((w) => w.stale === true) ? 1 : 0,
+        readAt:
+          observations.length === primary.length && observations.length
+            ? Math.min(...observations)
+            : null,
+        failures: account.poll_error || primary.some((w) => w.stale === true) ? 1 : 0,
         windows: windows.map((w) => ({
           id:
             w.kind === 'weekly'
@@ -108,6 +114,8 @@ export function normalizeKpatdevQuota(status: unknown, detail: unknown): ResetRo
               ? Math.max(0, Math.min(100, w.used_percent))
               : null,
           resetAt: dateMs(w.resets_at),
+          readAt: dateMs(w.observed_at),
+          stale: w.stale === true,
         })),
       },
     ];

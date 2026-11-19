@@ -5,15 +5,26 @@ import { apiClient } from '@/services/api/client';
 import { spendApi } from '@/services/api/spend';
 import { TYPE_COLORS } from '@/utils/quota';
 import { providerLabel } from '@/features/dashboard/utils';
-import { quotaSeries, quotaViewport, type QuotaHistory, type QuotaPoint } from './quotaModel';
+import {
+  quotaSeries,
+  quotaViewport,
+  type QuotaHistory,
+  type QuotaPoint,
+  type QuotaSample,
+} from './quotaModel';
+import { withLiveQuota } from './liveQuota';
 import styles from './SpendPage.module.scss';
 
-export function QuotaAvailability({ provider }: { provider: string }) {
+export function QuotaAvailability({ provider, live }: { provider: string; live?: QuotaSample }) {
   const { t, i18n } = useTranslation();
   const apiBase = useAuthStore((s) => s.apiBase);
   const key = useAuthStore((s) => s.managementKey);
   const connected = useAuthStore((s) => s.connectionStatus === 'connected');
-  const [history, setHistory] = useState<QuotaHistory | null>(null);
+  const [recordedHistory, setHistory] = useState<QuotaHistory | null>(null);
+  const history = useMemo(
+    () => (recordedHistory ? withLiveQuota(recordedHistory, live) : null),
+    [recordedHistory, live]
+  );
   const [failed, setFailed] = useState(false);
   const [zoom, setZoom] = useState(0);
   const clipId = useId();
@@ -57,9 +68,14 @@ export function QuotaAvailability({ provider }: { provider: string }) {
     const timer = window.setInterval(() => {
       if (document.visibilityState === 'visible') void refresh();
     }, 60000);
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') void refresh();
+    };
+    document.addEventListener('visibilitychange', onVisible);
     return () => {
       active = false;
       window.clearInterval(timer);
+      document.removeEventListener('visibilitychange', onVisible);
     };
   }, [apiBase, key, connected]);
   const series = useMemo(
