@@ -60,7 +60,59 @@ const gptImage = (): TokenRate => ({
   cacheWrite: null,
   source: RATE_SOURCES.openai,
 });
+// Standard Gemini 4 rates verified 2026-11-25. Thinking output is included;
+// implicit caching has a read price but no separate cache-write charge.
+const gemini4 = (
+  input: number,
+  output: number,
+  cacheRead: number,
+  introductory = false
+): TokenRate => ({
+  input,
+  output,
+  cacheRead,
+  cacheWrite: null,
+  source: RATE_SOURCES.google,
+  ...(introductory
+    ? {
+        effective: [
+          {
+            from: Date.parse('2026-12-01T00:00:00Z'),
+            input: 4,
+            output: 20,
+            cacheRead: 0.2,
+            cacheWrite: null,
+          },
+        ],
+      }
+    : {}),
+});
+const gemini4Models = {
+  'gemini-4-neon': gemini4(3, 15, 0.15),
+  'gemini-4-hydrogen': gemini4(1.5, 7.5, 0.075),
+  'gemini-4-carbon': gemini4(2, 10, 0.1, true),
+  'gemini-4-argon': gemini4(2, 10, 0.1, true),
+};
+
+export function tokenRateAt(rate: TokenRate, at = Date.now()): TokenRate {
+  let selected = rate;
+  let latest = -Infinity;
+  for (const change of rate.effective ?? []) {
+    if (at >= change.from && change.from > latest) {
+      selected = { ...rate, ...change };
+      latest = change.from;
+    }
+  }
+  return selected;
+}
+
 export const TOKEN_RATES: Record<string, TokenRate> = {
+  // Antigravity records effort-qualified IDs. These are the same priced models.
+  ...Object.fromEntries(
+    Object.entries(gemini4Models).flatMap(([model, rate]) =>
+      ['', '-low', '-medium', '-high', '-xhigh'].map((suffix) => [model + suffix, rate])
+    )
+  ),
   // Singapore list prices; cache reads use the implicit-cache benchmark.
   // Max explicit-cache reads are cheaper ($0.17), but the recorder combines them.
   'qwen3.8-max': {

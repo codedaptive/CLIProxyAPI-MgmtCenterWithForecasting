@@ -3,6 +3,8 @@ export interface UsageRow {
   account: string;
   provider: string;
   model: string;
+  // First request timestamp within a single dated price band.
+  pricedAt?: number;
   prompt: number;
   input: number;
   cacheRead: number;
@@ -51,6 +53,13 @@ export interface TokenRate {
   cacheRead: number;
   cacheWrite: number | null;
   source: string;
+  effective?: {
+    from: number;
+    input: number;
+    output: number;
+    cacheRead: number;
+    cacheWrite: number | null;
+  }[];
   // GPT Image accepts text/image input but only produces image output.
   // Flat input/cacheRead rates describe text; image input has separate rates.
   image?: { input: number; cacheRead: number };

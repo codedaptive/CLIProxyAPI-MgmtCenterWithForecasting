@@ -115,3 +115,35 @@ test('Sol estimated writes keep chart tokens, costs and forecast consistent with
   expect(Object.values(costs).reduce((a, b) => a + b, 0)).toBeCloseTo(apiEquivalent(sol)!);
   expect(spendTimeline(data, '', 'tokens').layers.every((l) => !l.estimatedWrites)).toBe(true);
 });
+
+test('Gemini dollar forecast changes tariff on December 1 without repricing history', () => {
+  const boundary = Date.parse('2026-12-01T00:00:00Z');
+  const start = boundary - HOUR / 2;
+  const usage = {
+    ...row,
+    model: 'gemini-4-carbon-high',
+    at: start - HOUR,
+    pricedAt: start - HOUR,
+    input: 3_000_000,
+    output: 0,
+    cacheRead: 0,
+    cacheWrite: 0,
+  };
+  const s = spendTimeline(
+    {
+      ...data,
+      now: start,
+      start: start - 5 * HOUR,
+      end: boundary + HOUR / 2,
+      createdAt: start - 10 * HOUR,
+      lastPoll: start,
+      rows: [usage],
+      recent: [usage],
+    },
+    '',
+    'api'
+  );
+  expect(s.actual.at(-1)!.values['gemini-4-carbon-high|input']).toBe(6);
+  expect(s.projected.find((p) => p.at === boundary)!.values['gemini-4-carbon-high|input']).toBe(7);
+  expect(s.projected.at(-1)!.values['gemini-4-carbon-high|input']).toBe(9);
+});

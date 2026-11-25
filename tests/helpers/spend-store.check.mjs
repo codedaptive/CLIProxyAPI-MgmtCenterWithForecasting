@@ -161,3 +161,21 @@ test('account activity spans months and survives reopening, without quota or pla
   s.db.close();s=openStore(file);assert.deepEqual(s.activity().lastUsed,expected);s.db.close();
  } finally {fs.rmSync(dir,{recursive:true,force:true});}
 });
+
+test('Gemini aggregation preserves price dates across reports, timelines and recent burn',()=>{
+  const s=openStore(':memory:');
+  try {
+    const boundary=Date.parse('2026-12-01T00:00:00Z');
+    s.record([
+      record({execution_id:'nov',model:'gemini-4-carbon-high',timestamp:new Date(boundary-1).toISOString()}),
+      record({execution_id:'dec',model:'gemini-4-carbon-high',timestamp:new Date(boundary).toISOString()}),
+    ]);
+    const report=s.report('2026-11',boundary-3600000,boundary+3600000);
+    assert.equal(report.rows.length,2);
+    assert.deepEqual(report.rows.map(r=>r.pricedAt).sort(),[boundary-1,boundary]);
+    const timeline=s.timeline('2026-11',boundary-3600000,boundary+3600000,boundary+1000);
+    assert.equal(timeline.recent.length,2);
+    assert.deepEqual(timeline.recent.map(r=>r.pricedAt).sort(),[boundary-1,boundary]);
+    assert.equal(timeline.rows.reduce((n,r)=>n+r.requests,0),2);
+  } finally {s.db.close();}
+});

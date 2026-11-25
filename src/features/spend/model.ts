@@ -1,4 +1,4 @@
-import { TOKEN_RATES } from './rates';
+import { TOKEN_RATES, tokenRateAt } from './rates';
 import type { TokenRate, UsageRow } from './types';
 
 export const TOKEN_CATEGORIES = ['input', 'output', 'cacheRead', 'cacheWrite'] as const;
@@ -27,7 +27,8 @@ export function apiContributions(
       output: (row.output * published.output) / 1_000_000,
     };
   }
-  const rate = published.long && row.prompt > published.long.above ? published.long : published;
+  const dated = tokenRateAt(published, row.pricedAt);
+  const rate = dated.long && row.prompt > dated.long.above ? dated.long : dated;
   if (row.cacheWrite > 0 && rate.cacheWrite === null) return null;
   return {
     input: (row.input * rate.input) / 1_000_000,

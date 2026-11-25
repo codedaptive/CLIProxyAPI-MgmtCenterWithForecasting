@@ -26,6 +26,7 @@ import {
   RATE_DATE,
   RATE_SOURCES,
   TOKEN_RATES,
+  tokenRateAt,
 } from './rates';
 import styles from './SpendPage.module.scss';
 
@@ -382,7 +383,8 @@ export function SpendPage() {
                 </tr>
               </thead>
               <tbody>
-                {Object.entries(TOKEN_RATES).flatMap(([model, r]) => {
+                {Object.entries(TOKEN_RATES).flatMap(([model, published]) => {
+                  const r = tokenRateAt(published, now);
                   const rows = r.image
                     ? [
                         { modality: 'text', values: [r.input, r.cacheRead, null, null] },

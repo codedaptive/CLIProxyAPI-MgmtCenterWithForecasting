@@ -1,6 +1,7 @@
 import { TYPE_COLORS } from '@/utils/quota';
 import { apiContributions, TOKEN_CATEGORIES, type TokenCategory } from './model';
 import type { SpendTimelineData, UsageRow } from './types';
+import { TOKEN_RATES } from './rates';
 
 export interface SpendLayer {
   key: string;
@@ -68,11 +69,12 @@ export function spendTimeline(data: SpendTimelineData, provider: string, unit: S
     );
   let missing = 0;
   const totals: Record<string, number> = Object.create(null);
-  const add = (target: Record<string, number>, row: UsageRow) => {
+  const add = (target: Record<string, number>, row: UsageRow, countMissing = true) => {
     const costs = unit === 'api' ? apiContributions(row) : null;
     if (
-      row.incomplete ||
-      (unit === 'api' && (!costs || TOKEN_CATEGORIES.some((k) => costs[k] === null)))
+      countMissing &&
+      (row.incomplete ||
+        (unit === 'api' && (!costs || TOKEN_CATEGORIES.some((k) => costs[k] === null))))
     )
       missing += row.requests;
     for (const category of TOKEN_CATEGORIES) {
@@ -111,12 +113,28 @@ export function spendTimeline(data: SpendTimelineData, provider: string, unit: S
     data.createdAt <= data.now - 3 * HOUR;
   const projected: SpendPoint[] = [];
   if (canForecast) {
-    for (let at = data.now; ; at = Math.min(at + HOUR, data.end)) {
-      const values: Record<string, number> = { ...totals };
-      for (const [k, value] of Object.entries(rates))
-        values[k] = (totals[k] ?? 0) + value * ((at - data.now) / (3 * HOUR));
-      projected.push({ at, values });
+    const changes =
+      unit === 'api'
+        ? [...models.keys()]
+            .flatMap((model) => (TOKEN_RATES[model]?.effective ?? []).map((change) => change.from))
+            .filter((at) => at > data.now && at < data.end)
+        : [];
+    const values: Record<string, number> = { ...totals };
+    for (let at = data.now; ;) {
+      projected.push({ at, values: { ...values } });
       if (at === data.end) break;
+      const next = Math.min(at + HOUR, data.end, ...changes.filter((change) => change > at));
+      const forecastRates: Record<string, number> = unit === 'api' ? Object.create(null) : rates;
+      if (unit === 'api') {
+        for (const row of recent) add(forecastRates, { ...row, pricedAt: at }, false);
+      }
+      for (const [key, value] of Object.entries(forecastRates)) {
+        values[key] =
+          unit === 'tokens'
+            ? (totals[key] ?? 0) + value * ((next - data.now) / (3 * HOUR))
+            : (values[key] ?? 0) + value * ((next - at) / (3 * HOUR));
+      }
+      at = next;
     }
   }
   return { layers, actual, projected, missing };

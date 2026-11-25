@@ -112,12 +112,13 @@ export function openStore(path) {
     },
     timeline(month, start, end, now = Date.now()) {
       // Preserve price bands within each half-hour bucket for exact API-rate allocation.
-      const columns = `account, provider, model, MAX(prompt) AS prompt,
+      const columns = `account, provider, model, MIN(at) AS pricedAt, MAX(prompt) AS prompt,
         SUM(input) AS input, SUM(cacheRead) AS cacheRead, SUM(cacheWrite) AS cacheWrite,
         SUM(estimatedCacheWrite) AS estimatedCacheWrite,
         SUM(output) AS output, SUM(incomplete) AS incomplete, SUM(failed) AS failed,
         COUNT(*) AS requests`;
       const groups = `account, provider, model, incomplete,
+        CASE WHEN model LIKE 'gemini-4-%' THEN CAST(at/86400000 AS INTEGER) ELSE 0 END,
         CASE WHEN prompt <= 100000 THEN 0 WHEN prompt <= 199999 THEN 1
              WHEN prompt <= 272000 THEN 2 ELSE 3 END`;
       return {
@@ -142,12 +143,14 @@ export function openStore(path) {
         gaps: Number(getMeta('gaps')) || 0,
         // Price-band aggregation keeps large months small without changing costs.
         // Boundaries mirror rates.ts (Haiku, Grok, OpenAI); raw events stay intact.
-        rows: db.prepare(`SELECT account, provider, model, MAX(prompt) AS prompt,
+        // Gemini 4 stays split by UTC day so published date changes cannot reprice history.
+        rows: db.prepare(`SELECT account, provider, model, MIN(at) AS pricedAt, MAX(prompt) AS prompt,
           SUM(input) AS input, SUM(cacheRead) AS cacheRead, SUM(cacheWrite) AS cacheWrite,
           SUM(estimatedCacheWrite) AS estimatedCacheWrite,
           SUM(output) AS output, SUM(incomplete) AS incomplete, SUM(failed) AS failed,
           COUNT(*) AS requests FROM spend_accounting_v1 WHERE at >= ? AND at < ?
           GROUP BY account, provider, model, incomplete,
+            CASE WHEN model LIKE 'gemini-4-%' THEN CAST(at/86400000 AS INTEGER) ELSE 0 END,
             CASE WHEN prompt <= 100000 THEN 0 WHEN prompt <= 199999 THEN 1
                  WHEN prompt <= 272000 THEN 2 ELSE 3 END`).all(start, end),
         plans: Object.fromEntries(db.prepare('SELECT account, amount FROM plans WHERE month = ?').all(month).map(r => [r.account, r.amount])),

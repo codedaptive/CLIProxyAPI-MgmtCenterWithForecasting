@@ -362,3 +362,54 @@ it('prices the recorded GPT-5.6 Terra usage separately from GPT-6.1 Terra', () =
     )
   ).toBeCloseTo(27.4);
 });
+
+describe('Gemini 4 published pricing', () => {
+  it('prices native and effort-qualified models across all token categories', () => {
+    for (const [family, expected] of [
+      ['neon', 18.15],
+      ['hydrogen', 9.075],
+      ['carbon', 12.1],
+      ['argon', 12.1],
+    ] as const) {
+      for (const suffix of ['', '-low', '-medium', '-high', '-xhigh']) {
+        const usage = row({
+          model: `gemini-4-${family}${suffix}`,
+          pricedAt: Date.parse('2026-11-25T12:00:00Z'),
+          input: 1_000_000,
+          output: 1_000_000,
+          cacheRead: 1_000_000,
+          cacheWrite: 0,
+          prompt: 1_000_000,
+        });
+        expect(apiEquivalent(usage)).toBeCloseTo(expected, 8);
+        const [account] = analyzeSpend([usage], { max: 100 });
+        expect(account.missing).toBe(0);
+        expect(account.allocated).toBe(100);
+      }
+    }
+    expect(apiEquivalent(row({ model: 'gemini-4-unknown' }))).toBeNull();
+  });
+  it('keeps introductory rates on historical usage and applies December rates at the boundary', () => {
+    const boundary = Date.parse('2026-12-01T00:00:00Z');
+    for (const model of ['gemini-4-carbon-high', 'gemini-4-argon-high']) {
+      const usage = row({
+        model,
+        input: 1_000_000,
+        output: 1_000_000,
+        cacheRead: 1_000_000,
+        cacheWrite: 0,
+      });
+      expect(apiEquivalent({ ...usage, pricedAt: boundary - 1 })).toBeCloseTo(12.1);
+      expect(apiEquivalent({ ...usage, pricedAt: boundary })).toBeCloseTo(24.2);
+      const [account] = analyzeSpend(
+        [
+          { ...usage, pricedAt: boundary - 1 },
+          { ...usage, pricedAt: boundary },
+        ],
+        { max: 200 }
+      );
+      expect(account.api).toBeCloseTo(36.3);
+      expect(account.missing).toBe(0);
+    }
+  });
+});
